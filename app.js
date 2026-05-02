@@ -195,7 +195,7 @@ function qHtml(tid, sid, idx, q) {
   <div class="q-row">
     <div class="q-cb${isChk ? " checked" : ""}" onclick="toggleCheck('${id}')"></div>
     <button class="q-text-btn${isChk ? " done" : ""}" onclick="toggleAnswer('${id}')">
-      ${dotHtml}${escHtml(q.t)}<span class="q-toggle-icon">${ansOpen ? "▲" : "▼"}</span>
+      ${dotHtml}<span class="q-text-inner">${renderMath(q.t)}</span><span class="q-toggle-icon">${ansOpen ? "▲" : "▼"}</span>
     </button>
     <button class="${copyClass}" id="copy-${id}" onclick="copyQ('${id}',this)" title="Скопировать вопрос">${copyIcon}</button>
   </div>
@@ -292,10 +292,11 @@ function toggleAnswer(id) {
   const sub   = topic.subs.find(s => s.id === sid);
   const q     = sub.qs[parseInt(idx)];
 
-  // update toggle icon
+  // update toggle icon only (don't touch the math-rendered question text)
   const icon = item.querySelector(".q-toggle-icon");
   const ansOpen = state.openAnswers.has(id);
   if (icon) icon.textContent = ansOpen ? "▲" : "▼";
+  // also keep copy button visibility correct (no side-effect from innerHTML replacement)
 
   // add/remove answer block
   const existing = document.getElementById("ans-" + id);
@@ -371,13 +372,26 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProgress();
   render();
   loadKaTeX(() => {
+    // re-render math in all visible question texts
+    document.querySelectorAll(".q-text-inner").forEach(span => {
+      const btn  = span.closest(".q-text-btn");
+      if (!btn) return;
+      const li   = btn.closest("li.q-item");
+      if (!li) return;
+      const id   = li.id.replace("qi-", "");
+      const [tid, sid, idx] = id.split("|");
+      const topic = TOPICS.find(t => t.id === tid);
+      const sub   = topic && topic.subs.find(s => s.id === sid);
+      const q     = sub && sub.qs[parseInt(idx)];
+      if (q) span.innerHTML = renderMath(q.t);
+    });
     // re-render all open answer blocks with math
     document.querySelectorAll(".ans-block").forEach(block => {
       const id = block.id.replace("ans-", "");
       const [tid, sid, idx] = id.split("|");
       const topic = TOPICS.find(t => t.id === tid);
-      const sub   = topic.subs.find(s => s.id === sid);
-      const q     = sub.qs[parseInt(idx)];
+      const sub   = topic && topic.subs.find(s => s.id === sid);
+      const q     = sub && sub.qs[parseInt(idx)];
       if (q && q.a) {
         block.innerHTML = q.a.map(line => `<p class="ans-line">${renderMath(line)}</p>`).join("");
       }
