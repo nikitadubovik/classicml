@@ -1,18 +1,69 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>ML Checklist</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- KaTeX -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Чеклист подготовки · Classic ML</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div id="app"></div>
+<div class="page">
 
-<script src="script.js"></script>
+  <!-- Header -->
+  <header>
+    <p class="hdr-eyebrow">Interview prep · Classic ML</p>
+    <h1 class="hdr-title">Чеклист подготовки</h1>
+    <p class="hdr-desc">
+      21 тема от математики к моделям. Кликни по вопросу — увидишь ответ с формулами.
+      Чекбокс — отметить как выученное. Прогресс сохраняется в браузере.
+    </p>
+
+    <div class="progress-row">
+      <div class="tick-strip" id="tick-strip"></div>
+      <div class="global-counter" id="global-counter">0<span> / 0</span></div>
+    </div>
+  </header>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn-action" onclick="expandAll()">Развернуть всё</button>
+    <button class="btn-action" onclick="collapseAll()">Свернуть</button>
+    <button class="btn-action" onclick="resetProgress()">Сбросить прогресс</button>
+  </div>
+
+  <!-- Topics -->
+  <div class="topics" id="topics"></div>
+
+  <!-- Legend -->
+  <footer class="legend">
+    <div class="legend-item">
+      <span class="q-dot tricky" style="flex-shrink:0;width:8px;height:8px;"></span>
+      хитрый вопрос
+    </div>
+    <div class="legend-item">
+      <span class="q-dot situational" style="flex-shrink:0;width:8px;height:8px;"></span>
+      ситуативный
+    </div>
+    <div class="legend-item">
+      <span class="tick empty" style="width:11px;height:11px;--tick-size:11px;"></span>
+      пусто
+    </div>
+    <div class="legend-item">
+      <span class="tick partial" style="width:11px;height:11px;--tick-size:11px;"></span>
+      частично
+    </div>
+    <div class="legend-item">
+      <span class="tick full" style="width:11px;height:11px;--tick-size:11px;"></span>
+      готово
+    </div>
+  </footer>
+
+</div>
+
+<!-- Data + Logic -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>
